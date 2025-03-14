@@ -16,3 +16,4 @@ use App\Http\Controllers\api\TaskController;
 */
 
 Route::apiResource('tasks', TaskController::class);
+Route::patch('tasks/{id}/complete', [TaskController::class, 'complete']);
