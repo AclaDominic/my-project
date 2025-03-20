@@ -22,15 +22,21 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('Incoming Request:', $request->all()); // ✅ Log request data
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'completed' => 'nullable|boolean',
         ]);
 
         $task = Task::create([
             'title' => $request->title,
             'description' => $request->description,
+            'completed' => $request->completed ?? false, // Ensure default value
         ]);
+
+        \Log::info('Created Task:', $task->toArray()); // ✅ Log stored data
 
         return response()->json([
             'message' => 'Task created successfully',
