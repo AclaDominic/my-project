@@ -30,3 +30,10 @@ EXPOSE 8000
 
 # Start Laravel using Artisan
 CMD php artisan serve --host=0.0.0.0 --port=8000
+
+
+# Install required PHP extensions
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
+
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
