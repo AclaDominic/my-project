@@ -21,11 +21,11 @@ Route::get('/', function () {
 
 use Illuminate\Support\Facades\Artisan;
 
-Route::get('/migrate', function () {
+Route::get('/seed', function () {
     try {
-        Artisan::call('migrate --force');
-        return 'Migrations ran successfully!';
+        Artisan::call('db:seed --force');
+        return 'Database seeding completed successfully!';
     } catch (\Exception $e) {
-        return 'Migration failed: ' . $e->getMessage();
+        return 'Seeding failed: ' . $e->getMessage();
     }
 });
