@@ -4,14 +4,15 @@ FROM php:8.2-fpm
 # Set working directory inside the container
 WORKDIR /var/www
 
-# Install system dependencies
+# Install system dependencies and required PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql gd
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql gd pdo_pgsql pgsql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,10 +31,3 @@ EXPOSE 8000
 
 # Start Laravel using Artisan
 CMD php artisan serve --host=0.0.0.0 --port=8000
-
-
-# Install required PHP extensions
-RUN docker-php-ext-install pdo pdo_pgsql pgsql
-
-# Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
