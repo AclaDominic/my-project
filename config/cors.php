@@ -20,8 +20,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'https://deployfortask.vercel.app',
-        'http://localhost:3000',
+        'https://deployfortask.vercel.app'
     ],
 
     'allowed_origins_patterns' => [],
