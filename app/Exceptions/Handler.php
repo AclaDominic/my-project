@@ -2,8 +2,9 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -23,8 +24,30 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (ThrottleRequestsException $exception, $request) {
+            $retryAfter = $exception->getHeaders()['Retry-After'] ?? 60;
+
+            // Check if the request is an API request
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Too many requests! Please slow down and try again later.',
+                    'retry_after' => $retryAfter
+                ], 429);
+            }
+
+            return response()->view('errors.429', ['retryAfter' => $retryAfter], 429);
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof ThrottleRequestsException) {
+            return response()->json([
+                'message' => 'Too many requests! Please slow down and try again later.',
+                'retry_after' => $exception->getHeaders()['Retry-After'] ?? 60 // Retry time in seconds
+            ], 429);
+        }
+
+        return parent::render($request, $exception);
     }
 }

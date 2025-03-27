@@ -15,5 +15,5 @@ use App\Http\Controllers\api\TaskController;
 |
 */
 
-Route::apiResource('tasks', TaskController::class);
-Route::patch('tasks/{id}/complete', [TaskController::class, 'complete']);
+Route::apiResource('tasks', TaskController::class)->middleware('throttle:10,1');
+Route::patch('tasks/{id}/complete', [TaskController::class, 'complete'])->middleware('throttle:10,1');
